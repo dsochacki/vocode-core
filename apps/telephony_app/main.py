@@ -33,28 +33,28 @@ import os
 # Fix for ssl issues with Redis on fly.io
 from urllib.parse import urlparse
 
-def my_initialize_redis(retries: int = 1):
-    redis_url = os.environ.get("REDIS_URL", None)
-    
-    if not redis_url:
-        raise ValueError("REDIS_URL is not set in environment")
+#def my_initialize_redis(retries: int = 1):
+#    redis_url = os.environ.get("REDIS_URL", None)
+#    
+#    if not redis_url:
+#        raise ValueError("REDIS_URL is not set in environment")
 
-    parsed = urlparse(redis_url)
-    backoff = ExponentialBackoff() if retries > 1 else NoBackoff()
-    retry = Retry(backoff, retries)
+#    parsed = urlparse(redis_url)
+#    backoff = ExponentialBackoff() if retries > 1 else NoBackoff()
+#    retry = Retry(backoff, retries)
 
-    return Redis(
-        host=parsed.hostname,
-        port=parsed.port,
-        username=parsed.username,
-        password=parsed.password,
-        decode_responses=True,
-        retry=retry,
-        ssl=False,
-        ssl_cert_reqs="none",  # Disable cert checks, Upstash certs are valid, but this avoids issues
-        retry_on_error=[ConnectionError, TimeoutError],
-        health_check_interval=30,
-    )
+#    return Redis(
+#        host=parsed.hostname,
+#        port=parsed.port,
+#        username=parsed.username,
+#        password=parsed.password,
+#        decode_responses=True,
+#        retry=retry,
+#        ssl=False,
+#        ssl_cert_reqs="none",  # Disable cert checks, Upstash certs are valid, but this avoids issues
+#        retry_on_error=[ConnectionError, TimeoutError],
+#        health_check_interval=30,
+#    )
 
 
 
@@ -71,7 +71,7 @@ app = FastAPI(docs_url=None)
 
 
 config_manager = RedisConfigManager()
-config_manager.redis = my_initialize_redis()
+#config_manager.redis = my_initialize_redis()
 
 #BASE_URL = os.getenv("BASE_URL")
 BASE_URL = f"{os.environ['RAILWAY_STATIC_URL']}" if "RAILWAY_STATIC_URL" in os.environ else "http://localhost:3000"
