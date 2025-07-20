@@ -98,7 +98,6 @@ elevenlabs_config = ElevenLabsSynthesizerConfig.from_telephone_output_device(
     model_id="eleven_multilingual_v2",
     language_code="de",
     experimental_websocket=True,
-    audio_encoding="raw"
 )
 
 telephony_server = TelephonyServer(
