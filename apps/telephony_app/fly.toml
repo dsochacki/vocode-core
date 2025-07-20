@@ -1,0 +1,22 @@
+app = "telephony-app"
+primary_region = "fra"
+
+[build]
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+  [http_service.concurrency]
+    type = "connections"
+    soft_limit = 200
+    hard_limit = 250
+  [[http_service.ports]]
+    port = 80
+    handlers = ["http"]
+  [[http_service.ports]]
+    port = 443
+    handlers = ["tls", "http", "websocket"]
