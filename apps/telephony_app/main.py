@@ -122,7 +122,7 @@ telephony_server = TelephonyServer(
             #    sampling_rate=8000,   
             #    audio_encoding="mulaw"
             #),
-            synthesizer_config=elevenlabs_config,
+            #synthesizer_config=elevenlabs_config,
             synthesizer=ElevenLabsWSSynthesizer(elevenlabs_config),
             transcriber_config = AzureTranscriberConfig(
                 sampling_rate=8000,
