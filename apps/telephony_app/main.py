@@ -64,7 +64,8 @@ app = FastAPI(docs_url=None)
 config_manager = RedisConfigManager()
 config_manager.redis = my_initialize_redis()
 
-BASE_URL = os.getenv("BASE_URL")
+#BASE_URL = os.getenv("BASE_URL")
+BASE_URL = f"{os.environ['RAILWAY_STATIC_URL']}/" if "RAILWAY_STATIC_URL" in os.environ else "http://localhost:3000"
 
 if not BASE_URL:
     ngrok_auth = os.environ.get("NGROK_AUTH_TOKEN")
