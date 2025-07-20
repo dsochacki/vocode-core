@@ -74,7 +74,7 @@ config_manager = RedisConfigManager()
 #config_manager.redis = my_initialize_redis()
 
 #BASE_URL = os.getenv("BASE_URL")
-BASE_URL = f"{os.environ['RAILWAY_STATIC_URL']}" if "RAILWAY_STATIC_URL" in os.environ else "http://localhost:3000"
+BASE_URL = f"{os.environ['RAILWAY_STATIC_URL']}" if "RAILWAY_STATIC_URL" in os.environ else os.getenv("BASE_URL")
 
 if not BASE_URL:
     ngrok_auth = os.environ.get("NGROK_AUTH_TOKEN")
@@ -98,7 +98,7 @@ elevenlabs_config = ElevenLabsSynthesizerConfig.from_telephone_output_device(
     model_id="eleven_multilingual_v2",
     language_code="de",
     experimental_websocket=True,
-    output_format="ulaw_8000",
+    audio_encoding="raw"
 )
 
 telephony_server = TelephonyServer(
