@@ -100,6 +100,11 @@ elevenlabs_config = ElevenLabsSynthesizerConfig.from_telephone_output_device(
     experimental_websocket=True,
 )
 
+synthesizer = ElevenLabsWSSynthesizer(elevenlabs_config)
+
+# 👇 HIER rein
+logger.info(f"Using synthesizer: {type(synthesizer).__name__}")
+
 telephony_server = TelephonyServer(
     base_url=BASE_URL,
     config_manager=config_manager,
@@ -122,7 +127,7 @@ telephony_server = TelephonyServer(
             #    audio_encoding="mulaw"
             #),
             synthesizer_config=elevenlabs_config,
-            synthesizer=ElevenLabsWSSynthesizer(elevenlabs_config),
+            synthesizer=synthesizer,
             transcriber_config = AzureTranscriberConfig(
                 sampling_rate=8000,
                 audio_encoding="mulaw",
