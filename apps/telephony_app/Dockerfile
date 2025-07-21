@@ -3,7 +3,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies incl. PortAudio
-RUN apt-get update && apt-get install -y git portaudio19-dev ffmpeg && apt-get clean
+RUN apt-get update && apt-get install -y git portaudio19-dev && apt-get clean
 
 # Install Python dependencies
 COPY requirements.txt .
