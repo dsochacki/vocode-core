@@ -101,8 +101,6 @@ elevenlabs_config = ElevenLabsSynthesizerConfig.from_telephone_output_device(
 )
 
 synthesizer = ElevenLabsWSSynthesizer(elevenlabs_config)
-
-# 👇 HIER rein
 logger.info(f"Using synthesizer: {type(synthesizer).__name__}")
 
 telephony_server = TelephonyServer(
