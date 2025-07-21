@@ -85,7 +85,7 @@ typing_extensions==4.14.1
 urllib3==2.5.0
 uvicorn==0.30.6
 uvloop==0.21.0
--e git+https://github.com/vocodedev/vocode-core.git@e054c33a72787b6a4920f91eb8598ad0bafb4240#egg=vocode
+-e git+https://github.com/dsochacki/vocode-core.git@f9b322ee52455c813ab608792d0c89de1dcf1bee#egg=vocode
 watchfiles==1.1.0
 websockets==14.2
 yarl==1.20.1
