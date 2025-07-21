@@ -18,7 +18,7 @@ from vocode.streaming.models.message import BaseMessage
 from vocode.streaming.models.telephony import TwilioConfig
 from vocode.streaming.telephony.config_manager.redis_config_manager import RedisConfigManager
 from vocode.streaming.telephony.server.base import TelephonyServer, TwilioInboundCallConfig
-from vocode.streaming.models.synthesizer import AzureSynthesizerConfig, ElevenLabsSynthesizerConfig
+from vocode.streaming.models.synthesizer import ElevenLabsSynthesizerConfig
 
 from vocode.streaming.models.transcriber import AzureTranscriberConfig
 from vocode.streaming.synthesizer.eleven_labs_websocket_synthesizer import ElevenLabsWSSynthesizer
@@ -31,32 +31,21 @@ import os
 
 
 # Fix for ssl issues with Redis on fly.io
-from urllib.parse import urlparse
-
-#def my_initialize_redis(retries: int = 1):
-#    redis_url = os.environ.get("REDIS_URL", None)
-#    
-#    if not redis_url:
-#        raise ValueError("REDIS_URL is not set in environment")
-
-#    parsed = urlparse(redis_url)
-#    backoff = ExponentialBackoff() if retries > 1 else NoBackoff()
-#    retry = Retry(backoff, retries)
-
-#    return Redis(
-#        host=parsed.hostname,
-#        port=parsed.port,
-#        username=parsed.username,
-#        password=parsed.password,
-#        decode_responses=True,
-#        retry=retry,
-#        ssl=False,
-#        ssl_cert_reqs="none",  # Disable cert checks, Upstash certs are valid, but this avoids issues
-#        retry_on_error=[ConnectionError, TimeoutError],
-#        health_check_interval=30,
-#    )
-
-
+def my_initialize_redis(retries: int = 1):
+    backoff = ExponentialBackoff() if retries > 1 else NoBackoff()
+    retry = Retry(backoff, retries)
+    return Redis(
+        host=os.environ.get("REDISHOST", "localhost"),
+        port=int(os.environ.get("REDISPORT", 6379)),
+        username=os.environ.get("REDISUSER", None),
+        password=os.environ.get("REDISPASSWORD", None),
+        decode_responses=True,
+        retry=retry,
+        ssl=os.environ.get("REDISSSL", "false").lower() == "true",
+        ssl_cert_reqs="none",
+        retry_on_error=[ConnectionError, TimeoutError],
+        health_check_interval=30,
+    )
 
 # if running from python, this will load the local .env
 # docker-compose will load the .env file by itself
@@ -73,8 +62,7 @@ app = FastAPI(docs_url=None)
 config_manager = RedisConfigManager()
 #config_manager.redis = my_initialize_redis()
 
-#BASE_URL = os.getenv("BASE_URL")
-BASE_URL = f"{os.environ['RAILWAY_STATIC_URL']}" if "RAILWAY_STATIC_URL" in os.environ else os.getenv("BASE_URL")
+BASE_URL = os.getenv("BASE_URL")
 
 if not BASE_URL:
     ngrok_auth = os.environ.get("NGROK_AUTH_TOKEN")
@@ -98,8 +86,12 @@ elevenlabs_config = ElevenLabsSynthesizerConfig.from_telephone_output_device(
     model_id="eleven_multilingual_v2",
     language_code="de",
     experimental_websocket=True,
+    experimental_streaming=True,
+    optimize_streaming_latency=2,
+    stability=0.3,
+    similarity_boost=0.75,
 )
-
+#ElevenLabsSynthesizer geht beim zweiten mal nicht (IMO: True)
 synthesizer = ElevenLabsWSSynthesizer(elevenlabs_config)
 logger.info(f"Using synthesizer: {type(synthesizer).__name__}")
 
