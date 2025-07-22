@@ -22,6 +22,7 @@ from vocode.streaming.models.synthesizer import ElevenLabsSynthesizerConfig
 
 from vocode.streaming.models.transcriber import AzureTranscriberConfig
 from vocode.streaming.synthesizer.eleven_labs_websocket_synthesizer import ElevenLabsWSSynthesizer
+from vocode.streaming.synthesizer.eleven_labs_websocket_synthesizer import ElevenLabsSynthesizer
 
 from redis.asyncio import Redis
 from redis.backoff import ExponentialBackoff, NoBackoff
@@ -82,16 +83,17 @@ with open("agent_prompt.txt", "r", encoding="utf-8") as f:
 
 elevenlabs_config = ElevenLabsSynthesizerConfig.from_telephone_output_device(
     api_key=os.environ["ELEVEN_LABS_API_KEY"],
-    voice_id="1iF3vHdwHKuVKSPDK23Z",
+    voice_id="KXxZd16DiBqt82nbarJx",
     model_id="eleven_multilingual_v2",
     language_code="de",
     experimental_websocket=True,
-    experimental_streaming=True,
+#    experimental_streaming=True,
     optimize_streaming_latency=2,
     stability=0.3,
     similarity_boost=0.75,
 )
 #ElevenLabsSynthesizer geht beim zweiten mal nicht (IMO: True)
+#synthesizer = ElevenLabsSynthesizer(elevenlabs_config)
 synthesizer = ElevenLabsWSSynthesizer(elevenlabs_config)
 logger.info(f"Using synthesizer: {type(synthesizer).__name__}")
 
@@ -102,7 +104,9 @@ telephony_server = TelephonyServer(
         TwilioInboundCallConfig(
             url="/inbound_call",
             agent_config=ChatGPTAgentConfig(
-                initial_message=BaseMessage(text="Willkommen bei firstclass! Wie kann ich Ihnen helfen?"),
+                model_name="gpt-4o",
+                openai_api_key=os.environ["OPENAI_API_KEY"],
+                initial_message=BaseMessage(text="Hallo, mein Name ist Anna von firstclass. Schön, dass Sie da sind. Wie kann ich Sie unterstützen?"),
                 prompt_preamble=prompt_preamble,
                 generate_responses=True,
                 transcriber_callback=lambda transcript: logger.debug(f"🗣️ Nutzer sagt: {transcript.text}"),
