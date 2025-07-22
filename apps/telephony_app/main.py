@@ -82,7 +82,7 @@ with open("agent_prompt.txt", "r", encoding="utf-8") as f:
 
 elevenlabs_config = ElevenLabsSynthesizerConfig.from_telephone_output_device(
     api_key=os.environ["ELEVEN_LABS_API_KEY"],
-    voice_id="KXxZd16DiBqt82nbarJx",
+    voice_id="1iF3vHdwHKuVKSPDK23Z",
     model_id="eleven_multilingual_v2",
     language_code="de",
     experimental_websocket=True,
