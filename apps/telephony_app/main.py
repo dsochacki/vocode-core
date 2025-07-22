@@ -58,9 +58,9 @@ configure_pretty_logging()
 
 app = FastAPI(docs_url=None)
 
-
 config_manager = RedisConfigManager()
-#config_manager.redis = my_initialize_redis()
+if os.getenv("ENVIRONMENT") == "FLY":
+    config_manager.redis = my_initialize_redis()
 
 BASE_URL = os.getenv("BASE_URL")
 
@@ -82,7 +82,7 @@ with open("agent_prompt.txt", "r", encoding="utf-8") as f:
 
 elevenlabs_config = ElevenLabsSynthesizerConfig.from_telephone_output_device(
     api_key=os.environ["ELEVEN_LABS_API_KEY"],
-    voice_id="g6xIsTj2HwM6VR4iXFCw",
+    voice_id="KXxZd16DiBqt82nbarJx",
     model_id="eleven_multilingual_v2",
     language_code="de",
     experimental_websocket=True,
